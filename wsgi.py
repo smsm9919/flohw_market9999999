@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# wsgi.py — Gunicorn entrypoint expected by Render (wsgi:app)
 import os, importlib
 from datetime import timedelta
 from flask import Flask, request, make_response
@@ -29,7 +28,7 @@ def _load_existing_app():
     def _root():
         if request.method == "HEAD":
             return "", 200
-        return {"status":"ok","hint":"حدد APP_IMPORT_PATH لتطبيقك الحقيقي"}, 200
+        return {"status":"ok","hint":"APP_IMPORT_PATH not set or module not found"}, 200
     return fb
 
 def _apply_security(app):
