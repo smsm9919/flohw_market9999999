@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-07-28T03:35:21.540906",
+  "domain": "flowmarket.com",
+  "dns_status": {
+    "Cloudflare": {
+      "server": "Cloudflare",
+      "ip": "1.1.1.1",
+      "apex_record": null,
+      "www_record": null,
+      "status": "timeout",
+      "error": "Command '['dig', '@1.1.1.1', 'flowmarket.com', 'A', '+short', '+time=5']' timed out after 10 seconds"
+    },
+    "Google": {
+      "server": "Google",
+      "ip": "8.8.8.8",
+      "apex_record": "No answer",
+      "www_record": "No answer",
+      "status": "no_record"
+    },
+    "Quad9": {
+      "server": "Quad9",
+      "ip": "9.9.9.9",
+      "apex_record": null,
+      "www_record": null,
+      "status": "timeout",
+      "error": "Command '['dig', '@9.9.9.9', 'flowmarket.com', 'A', '+short', '+time=5']' timed out after 10 seconds"
+    },
+    "OpenDNS": {
+      "server": "OpenDNS",
+      "ip": "208.67.222.222",
+      "apex_record": null,
+      "www_record": null,
+      "status": "timeout",
+      "error": "Command '['dig', '@208.67.222.222', 'flowmarket.com', 'A', '+short', '+time=5']' timed out after 10 seconds"
+    }
+  },
+  "ssl_status": {
+    "https_apex": {
+      "status": "connection_error",
+      "response_code": null
+    },
+    "http_apex": {
+      "status": "error: HTTPConnectionPool(host='flowmarket.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x7fdffdcdba10>: Failed to resolve 'flowmarket.com' ([Errno -5] No address associated with hostname)\"))",
+      "response_code": null
+    },
+    "https_www": {
+      "status": "unknown",
+      "response_code": null
+    }
+  },
+  "health_check": {
+    "status": "error",
+    "error": "HTTPSConnectionPool(host='flowmarket.com', port=443): Max retries exceeded with url: /healthz (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x7fdffdce5b90>: Failed to resolve 'flowmarket.com' ([Errno -5] No address associated with hostname)\"))"
+  },
+  "propagation_status": {
+    "percentage": 0.0,
+    "resolved_servers": 0,
+    "total_servers": 4,
+    "status": "none",
+    "pending_servers": [
+      "Cloudflare",
+      "Google",
+      "Quad9",
+      "OpenDNS"
+    ],
+    "estimated_time": "DNS غير مُعدّ بعد"
+  }
+}

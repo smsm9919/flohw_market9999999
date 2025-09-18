@@ -1,0 +1,30 @@
+{
+  "cloudflare": [
+    {
+      "type": "CNAME",
+      "name": "flowmarket.com",
+      "target": "flowmarket.onrender.com",
+      "proxy": true
+    },
+    {
+      "type": "CNAME",
+      "name": "www",
+      "target": "flowmarket.onrender.com",
+      "proxy": true
+    }
+  ],
+  "other_providers": [
+    {
+      "type": "CNAME",
+      "host": "@",
+      "points_to": "flowmarket.onrender.com",
+      "ttl": 300
+    },
+    {
+      "type": "CNAME",
+      "host": "www",
+      "points_to": "flowmarket.onrender.com",
+      "ttl": 300
+    }
+  ]
+}

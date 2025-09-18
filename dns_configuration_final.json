@@ -1,0 +1,64 @@
+{
+  "domain": "flowmarket.com",
+  "target_server": "6f60513c-8834-49af-9334-e0fd476a5e81-00-38776ye7bjjmo.picard.replit.dev",
+  "dns_records": {
+    "A_record": {
+      "name": "@",
+      "type": "A", 
+      "value": "replit_server_ip",
+      "ttl": 300,
+      "note": "يحتاج الحصول على IP من Replit"
+    },
+    "CNAME_www": {
+      "name": "www",
+      "type": "CNAME",
+      "value": "6f60513c-8834-49af-9334-e0fd476a5e81-00-38776ye7bjjmo.picard.replit.dev",
+      "ttl": 300
+    },
+    "CNAME_root": {
+      "name": "@",
+      "type": "CNAME", 
+      "value": "6f60513c-8834-49af-9334-e0fd476a5e81-00-38776ye7bjjmo.picard.replit.dev",
+      "ttl": 300,
+      "note": "بديل لـ A record"
+    }
+  },
+  "ssl_configuration": {
+    "provider": "Let's Encrypt",
+    "auto_renewal": true,
+    "force_https": true,
+    "hsts": true
+  },
+  "replit_custom_domain_setup": {
+    "step1": "انتقل إلى Replit Dashboard",
+    "step2": "اختر المشروع الحالي",
+    "step3": "انقر على Settings > Domains",
+    "step4": "أضف flowmarket.com كـ Custom Domain",
+    "step5": "احصل على DNS instructions من Replit",
+    "step6": "اضبط DNS records في موفر الدومين"
+  },
+  "domain_provider_instructions": {
+    "cloudflare": {
+      "login": "https://dash.cloudflare.com",
+      "dns_section": "DNS > Records",
+      "add_record": "Add record"
+    },
+    "namecheap": {
+      "login": "https://ap.www.namecheap.com/dashboard",
+      "dns_section": "Domain List > Manage > Advanced DNS",
+      "add_record": "Add New Record"
+    },
+    "godaddy": {
+      "login": "https://dcc.godaddy.com/",
+      "dns_section": "DNS > Records",
+      "add_record": "Add"
+    }
+  },
+  "verification_steps": [
+    "انتظر انتشار DNS (5-48 ساعة)",
+    "تحقق من https://flowmarket.com",
+    "تأكد من SSL certificate",
+    "اختبر جميع الصفحات",
+    "فحص Health Check"
+  ]
+}

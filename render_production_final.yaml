@@ -1,0 +1,90 @@
+services:
+  # Main Flohmarkt Web Application
+  - type: web
+    name: flohmarkt-production
+    runtime: python3
+    region: oregon  # منطقة أوريجون للأداء الأفضل
+    plan: starter   # يمكن ترقيتها لاحقاً
+    branch: main
+    rootDir: .
+    
+    # Build Configuration
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements_production.txt
+    
+    # Start Command with Gunicorn
+    startCommand: gunicorn --config gunicorn.conf.py main:app
+    
+    # Environment Variables
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@flowmarket.com
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: flohmarkt-postgres
+          property: connectionString
+      - key: PYTHONPATH
+        value: .
+      - key: GUNICORN_CMD_ARGS
+        value: "--preload --worker-connections 1000"
+    
+    # Health Check Configuration
+    healthCheckPath: /healthz
+    
+    # Auto Deploy
+    autoDeploy: true
+    
+    # Custom Domain Configuration
+    domains:
+      - flowmarket.com
+      - www.flowmarket.com
+    
+    # HTTPS Redirect
+    httpsUpgrade: true
+    
+    # Resource Configuration
+    disk:
+      name: flohmarkt-disk
+      size: 1GB
+      
+  # PostgreSQL Database
+  - type: postgres
+    name: flohmarkt-postgres
+    databaseName: flohmarkt_production
+    user: flohmarkt_admin
+    plan: starter
+    region: oregon
+    
+    # Backup Configuration
+    backupRetentionDays: 7
+    pointInTimeRecovery: true
+    
+    # Security
+    ipAllowList: []  # Allow all for web service
+    
+# Environment Groups for better management
+envVarGroups:
+  - name: production-settings
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DEBUG
+        value: "False"
+      - key: TESTING
+        value: "False"
+      - key: MAX_CONTENT_LENGTH
+        value: "16777216"  # 16MB for file uploads
+
+# Notification Settings for monitoring
+notifications:
+  - type: failure
+    webhookURL: ""  # يمكن إضافة webhook للتنبيهات
+  - type: success
+    webhookURL: ""

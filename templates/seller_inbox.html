@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-inbox"></i> 📥 الرسائل الواردة</h1>
+        <a href="{{ url_for('my_products') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> العودة لمنتجاتي
+        </a>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message-card card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ message.buyer_name }}</strong>
+                    <span class="text-muted">{{ message.buyer_email }}</span>
+                </div>
+                <div class="text-muted">
+                    <small>{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h6 class="text-primary">بخصوص: {{ message.product.name }}</h6>
+                        <div class="message-thread" id="thread-{{ message.id }}">
+                            <div class="message-bubble buyer-message">
+                                <div class="message-header">
+                                    <strong>{{ message.buyer_name }}</strong>
+                                    <small class="text-muted">{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                                <p class="message-text">{{ message.message_text }}</p>
+                            </div>
+                        </div>
+                        {% if not message.is_read %}
+                        <span class="badge bg-warning">جديد</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-primary btn-sm reply-btn" 
+                                data-message-id="{{ message.id }}"
+                                data-buyer-email="{{ message.buyer_email }}" 
+                                data-buyer-name="{{ message.buyer_name }}"
+                                data-product-name="{{ message.product.name }}"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#replyModal">
+                            <i class="fas fa-reply"></i> رد ✉️
+                        </button>
+                        {% if not message.is_read %}
+                        <button class="btn btn-outline-success btn-sm mark-read-btn" 
+                                data-message-id="{{ message.id }}">
+                            <i class="fas fa-check"></i> تم القراءة
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-warning btn-sm mark-unread-btn" 
+                                data-message-id="{{ message.id }}">
+                            <i class="fas fa-undo"></i> غير مقروءة
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination if needed -->
+    {% if pagination and pagination.pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if pagination.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('seller_inbox', page=pagination.prev_num) }}">السابق</a>
+            </li>
+            {% endif %}
+            
+            {% for page_num in pagination.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num != pagination.page %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('seller_inbox', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% endif %}
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if pagination.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('seller_inbox', page=pagination.next_num) }}">التالي</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <h3 class="text-muted">📭 لا توجد رسائل جديدة من المشترين حتى الآن</h3>
+        <p class="text-muted">ستظهر هنا جميع الرسائل التي يرسلها المشترون المهتمون بمنتجاتك</p>
+        <a href="{{ url_for('my_products') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> إضافة منتج جديد
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Reply Modal -->
+<div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="replyModalLabel">
+                    <i class="fas fa-reply"></i> الرد على الرسالة
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>إلى:</strong> <span id="replyBuyerName"></span> (<span id="replyBuyerEmail"></span>)
+                </div>
+                <div class="mb-3">
+                    <strong>بخصوص:</strong> <span id="replyProductName"></span>
+                </div>
+                <form id="replyForm">
+                    <input type="hidden" id="replyMessageId">
+                    <input type="hidden" id="replyToEmail">
+                    
+                    <div class="mb-3">
+                        <label for="replySubject" class="form-label">موضوع الرسالة</label>
+                        <input type="text" class="form-control" id="replySubject" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="replyMessage" class="form-label">الرسالة</label>
+                        <textarea class="form-control" id="replyMessage" rows="6" required 
+                                  placeholder="اكتب ردك هنا..."></textarea>
+                    </div>
+                </form>
+                <div id="replyResult"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="sendReplyBtn">
+                    <i class="fas fa-paper-plane"></i> إرسال الرد
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle reply button clicks
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const messageId = this.dataset.messageId;
+            const buyerEmail = this.dataset.buyerEmail;
+            const buyerName = this.dataset.buyerName;
+            const productName = this.dataset.productName;
+            
+            document.getElementById('replyMessageId').value = messageId;
+            document.getElementById('replyToEmail').value = buyerEmail;
+            document.getElementById('replyBuyerName').textContent = buyerName;
+            document.getElementById('replyBuyerEmail').textContent = buyerEmail;
+            document.getElementById('replyProductName').textContent = productName;
+            document.getElementById('replySubject').value = `رد بخصوص: ${productName}`;
+        });
+    });
+    
+    // Handle send reply
+    document.getElementById('sendReplyBtn').addEventListener('click', function() {
+        const messageId = document.getElementById('replyMessageId').value;
+        const toEmail = document.getElementById('replyToEmail').value;
+        const subject = document.getElementById('replySubject').value.trim();
+        const message = document.getElementById('replyMessage').value.trim();
+        
+        if (!subject || !message) {
+            document.getElementById('replyResult').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> يرجى ملء جميع الحقول
+                </div>
+            `;
+            return;
+        }
+        
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+        
+        fetch('/api/seller_reply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message_id: messageId,
+                to_email: toEmail,
+                subject: subject,
+                message: message
+            })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                // Add the new message to the thread immediately
+                addMessageToThread(messageId, message, 'seller');
+                
+                document.getElementById('replyResult').innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> ✅ Reply sent successfully! Message delivered
+                    </div>
+                `;
+                
+                // Clear the form
+                document.getElementById('replyMessage').value = '';
+                document.getElementById('replySubject').value = '';
+                
+                // Close modal after short delay
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('replyModal'));
+                    if (modal) modal.hide();
+                    // Don't reload - use real-time updates instead
+                    updateMessageStatus(messageId, true); // Mark as read
+                }, 1500);
+            } else {
+                document.getElementById('replyResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 🔴 Error: ${data.message || 'Message sending failed'}
+                    </div>
+                `;
+            }
+            
+            this.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الرد';
+            this.disabled = false;
+        })
+        .catch(error => {
+            console.error('Reply error details:', error);
+            document.getElementById('replyResult').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> 🔴 Connection failed: ${error.message || 'Network error'}
+                </div>
+            `;
+            this.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الرد';
+            this.disabled = false;
+        });
+    });
+    
+    // Handle mark as read
+    document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const messageId = this.dataset.messageId;
+            
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحديث...';
+            
+            fetch('/api/mark_message_read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message_id: messageId,
+                    mark_as_read: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('حدث خطأ: ' + data.message);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-check"></i> تم القراءة';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ في الاتصال');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-check"></i> تم القراءة';
+            });
+        });
+    });
+    
+    // Handle mark as unread
+    document.querySelectorAll('.mark-unread-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const messageId = this.dataset.messageId;
+            
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحديث...';
+            
+            fetch('/api/mark_message_read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message_id: messageId,
+                    mark_as_read: false
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('حدث خطأ: ' + data.message);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-undo"></i> غير مقروءة';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ في الاتصال');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-undo"></i> غير مقروءة';
+            });
+        });
+    });
+});
+
+// Function to add message to thread in real-time
+function addMessageToThread(messageId, messageText, senderType) {
+    const thread = document.getElementById(`thread-${messageId}`);
+    if (thread) {
+        const now = new Date();
+        const timestamp = now.toLocaleString('ar-EG', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        const messageClass = senderType === 'seller' ? 'seller-message' : 'buyer-message';
+        const senderName = senderType === 'seller' ? 'أنت (البائع)' : 'المشتري';
+        
+        const newMessage = document.createElement('div');
+        newMessage.className = `message-bubble ${messageClass}`;
+        newMessage.innerHTML = `
+            <div class="message-header">
+                <strong>${senderName}</strong>
+                <small class="text-muted">${timestamp}</small>
+            </div>
+            <p class="message-text">${messageText}</p>
+        `;
+        
+        thread.appendChild(newMessage);
+        
+        // Auto-scroll to latest message
+        thread.scrollTop = thread.scrollHeight;
+        
+        // Add delivery confirmation
+        if (senderType === 'seller') {
+            setTimeout(() => {
+                const deliveryIndicator = document.createElement('div');
+                deliveryIndicator.className = 'text-success text-end';
+                deliveryIndicator.innerHTML = '<small><i class="fas fa-check-double"></i> تم التسليم</small>';
+                newMessage.appendChild(deliveryIndicator);
+            }, 500);
+        }
+    }
+}
+
+// Function to update message status without reload
+function updateMessageStatus(messageId, isRead) {
+    const messageCard = document.querySelector(`[data-message-id="${messageId}"]`).closest('.message-card');
+    if (messageCard) {
+        const badge = messageCard.querySelector('.badge');
+        if (badge && isRead) {
+            badge.remove();
+        }
+    }
+}
+
+// Auto-refresh message threads every 10 seconds
+setInterval(() => {
+    // Only refresh if user is actively viewing the page
+    if (document.visibilityState === 'visible') {
+        document.querySelectorAll('.message-thread').forEach(thread => {
+            const messageId = thread.id.replace('thread-', '');
+            checkForNewReplies(messageId);
+        });
+    }
+}, 10000);
+
+// Function to check for new replies in thread
+function checkForNewReplies(messageId) {
+    fetch(`/api/message_thread/${messageId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.replies && data.replies.length > 0) {
+                const thread = document.getElementById(`thread-${messageId}`);
+                const currentMessages = thread.querySelectorAll('.message-bubble').length;
+                
+                if (data.replies.length > currentMessages - 1) {
+                    // New replies detected - add them
+                    data.replies.forEach((reply, index) => {
+                        if (index >= currentMessages - 1) {
+                            addMessageToThread(messageId, reply.message, reply.sender_type);
+                        }
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            console.log('Error checking replies:', error);
+        });
+}
+});
+</script>
+
+<style>
+.message-card {
+    border-left: 4px solid #007bff;
+    transition: box-shadow 0.3s ease;
+}
+
+.message-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.message-thread {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.message-bubble {
+    margin: 10px 0;
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.buyer-message {
+    background-color: white;
+    border: 2px solid #007bff;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.seller-message {
+    background-color: #e8f5e8;
+    border: 2px solid #28a745;
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.message-text {
+    margin: 0;
+    color: #006400;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.seller-message .message-text {
+    color: #155724;
+}
+
+.messages-container {
+    max-width: 100%;
+}
+
+.reply-btn {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.reply-btn:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+    transform: translateY(-1px);
+}
+
+.mark-read-btn, .mark-unread-btn {
+    cursor: pointer;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.mark-read-btn:hover {
+    background-color: #28a745;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.mark-unread-btn:hover {
+    background-color: #ffc107;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 768px) {
+    .message-card .card-body .row {
+        flex-direction: column;
+    }
+    
+    .message-card .card-body .col-md-4 {
+        margin-top: 15px;
+        text-align: center !important;
+    }
+    
+    .message-text {
+        font-size: 15px;
+        padding: 12px;
+    }
+    
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 14px;
+        margin: 3px;
+    }
+}
+</style>
+{% endblock %}

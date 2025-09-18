@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المنتجات - فلو ماركت</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    {% include 'base.html' %}
+    
+    <main class="container" style="margin-top: 100px; padding: 20px;">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-box"></i>
+                إدارة المنتجات
+            </h1>
+            <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right"></i> العودة للوحة الإدارة
+            </a>
+        </div>
+
+        <div class="filter-tabs">
+            <a href="{{ url_for('admin_products') }}" 
+               class="filter-tab {{ 'active' if status_filter == 'all' else '' }}">
+                الكل
+            </a>
+            <a href="{{ url_for('admin_products') }}?status=pending" 
+               class="filter-tab {{ 'active' if status_filter == 'pending' else '' }}">
+                في الانتظار
+            </a>
+            <a href="{{ url_for('admin_products') }}?status=approved" 
+               class="filter-tab {{ 'active' if status_filter == 'approved' else '' }}">
+                معتمد
+            </a>
+            <a href="{{ url_for('admin_products') }}?status=rejected" 
+               class="filter-tab {{ 'active' if status_filter == 'rejected' else '' }}">
+                مرفوض
+            </a>
+        </div>
+
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>الصورة</th>
+                        <th>اسم المنتج</th>
+                        <th>البائع</th>
+                        <th>الفئة</th>
+                        <th>السعر</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإضافة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.image_url %}
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" 
+                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                            {% else %}
+                                <i class="fas fa-image" style="font-size: 24px; color: #ccc;"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.seller.fullname }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.price }} جنيه</td>
+                        <td>
+                            {% if product.status == 'pending' %}
+                                <span class="badge badge-pending">في الانتظار</span>
+                            {% elif product.status == 'approved' %}
+                                <span class="badge badge-approved">معتمد</span>
+                            {% else %}
+                                <span class="badge badge-rejected">مرفوض</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td class="actions">
+                            {% if product.status == 'pending' %}
+                                <form method="POST" action="{{ url_for('approve_product', product_id=product.id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fas fa-check"></i> موافقة
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('reject_product', product_id=product.id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-times"></i> رفض
+                                    </button>
+                                </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('delete_product_admin', product_id=product.id) }}" 
+                                  style="display: inline;" 
+                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> حذف
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

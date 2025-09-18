@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - Flohmarkt</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+        
+        .admin-sidebar {
+            background: var(--bg2);
+            padding: 2rem 1rem;
+            border-left: 1px solid rgba(255,255,255,.1);
+        }
+        
+        .admin-content {
+            padding: 2rem;
+            background: var(--bg);
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg2);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,.1);
+        }
+        
+        .stat-card .icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text);
+            margin: 0;
+        }
+        
+        .stat-card .label {
+            color: var(--muted);
+            margin: 0;
+        }
+        
+        .admin-table {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        
+        .table-header h3 {
+            margin: 0;
+            color: var(--text);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+        
+        .data-table th {
+            background: rgba(255,255,255,.02);
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .data-table td {
+            color: var(--muted);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 4px;
+        }
+        
+        .btn-edit {
+            background: var(--yellow);
+            color: black;
+        }
+        
+        .btn-delete {
+            background: var(--red);
+            color: white;
+        }
+        
+        .btn-approve {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-approve:hover {
+            background: #229954;
+        }
+        
+        .btn-reject {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background: #c0392b;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-approved {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .status-rejected {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--muted);
+            cursor: pointer;
+        }
+        
+        .form-row {
+            margin-bottom: 1rem;
+        }
+        
+        .form-row label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            color: var(--muted);
+            padding: 2rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div style="margin-bottom: 2rem;">
+                <h2 style="color: var(--text); margin: 0;">لوحة الإدارة</h2>
+                <p style="color: var(--muted); margin: 0.5rem 0 0;">مرحباً، {{ session.get('fullname') }}</p>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li><a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-chart-bar"></i>
+                    الإحصائيات
+                </a></li>
+                <li><a href="#products" class="nav-link" data-section="products">
+                    <i class="fas fa-box"></i>
+                    إدارة المنتجات
+                </a></li>
+                <li><a href="#users" class="nav-link" data-section="users">
+                    <i class="fas fa-users"></i>
+                    المستخدمين
+                </a></li>
+                <li><a href="#categories" class="nav-link" data-section="categories">
+                    <i class="fas fa-tags"></i>
+                    الفئات
+                </a></li>
+                <li><a href="{{ url_for('index') }}" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,.1); padding-top: 1rem;">
+                    <i class="fas fa-home"></i>
+                    العودة للموقع
+                </a></li>
+                <li><a href="{{ url_for('logout') }}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </a></li>
+            </ul>
+        </aside>
+        
+        <main class="admin-content">
+            <div id="alerts"></div>
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="admin-section">
+                <!-- Welcome Message -->
+                <div style="background: linear-gradient(135deg, #2c3e50, #34495e); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <h1 style="color: #ecf0f1; margin: 0 0 1rem 0; font-size: 2rem;">
+                        <i class="fas fa-user-shield" style="margin-left: 10px;"></i>
+                        مرحباً بك في لوحة الإدارة
+                    </h1>
+                    <p style="color: #bdc3c7; font-size: 1.1rem; margin: 0; line-height: 1.6;">
+                        كمدير للموقع، يمكنك إدارة جميع المنتجات والمستخدمين والفئات. 
+                        تستطيع الموافقة على المنتجات الجديدة، حذف المحتوى غير المناسب، وإضافة منتجات جديدة.
+                    </p>
+                </div>
+                
+                <h1 style="color: var(--text); margin-bottom: 2rem;">الإحصائيات العامة</h1>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-box"></i></div>
+                        <p class="number" id="total-products">{{ products_count }}</p>
+                        <p class="label">إجمالي المنتجات</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-users"></i></div>
+                        <p class="number" id="total-users">{{ users_count }}</p>
+                        <p class="label">إجمالي المستخدمين</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-calendar"></i></div>
+                        <p class="number" id="new-products">{{ new_products }}</p>
+                        <p class="label">منتجات جديدة</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-crown"></i></div>
+                        <p class="number">{{ admins|length }}</p>
+                        <p class="label">المديرين</p>
+                    </div>
+                </div>
+                
+                <div class="admin-table">
+                    <div class="table-header">
+                        <h3>آخر المنتجات المضافة</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم المنتج</th>
+                                <th>الفئة</th>
+                                <th>السعر</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in recent_products %}
+                            <tr>
+                                <td>{{ product.id }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.category_name }}</td>
+                                <td>{{ "{:,.0f}".format(product.price) }} جنيه</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Products Section -->
+            <section id="products-section" class="admin-section hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1 style="color: var(--text); margin: 0;">إدارة المنتجات</h1>
+                    <button class="btn btn-primary" onclick="openAddProductModal()">
+                        <i class="fas fa-plus"></i> إضافة منتج
+                    </button>
+                </div>
+                
+                <div class="admin-table">
+                    <div class="table-header">
+                        <h3>جميع المنتجات</h3>
+                        <div class="loading" id="products-loading">جاري التحميل...</div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الصورة</th>
+                                <th>اسم المنتج</th>
+                                <th>الفئة</th>
+                                <th>السعر</th>
+                                <th>البائع</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Users Section -->
+            <section id="users-section" class="admin-section hidden">
+                <h1 style="color: var(--text); margin-bottom: 2rem;">المستخدمين</h1>
+                
+                <div class="admin-table">
+                    <div class="table-header">
+                        <h3>جميع المستخدمين</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الهاتف</th>
+                                <th>الدور</th>
+                                <th>تاريخ التسجيل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr><td colspan="6" class="loading">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Categories Section -->
+            <section id="categories-section" class="admin-section hidden">
+                <h1 style="color: var(--text); margin-bottom: 2rem;">الفئات</h1>
+                
+                <div class="admin-table">
+                    <div class="table-header">
+                        <h3>جميع الفئات</h3>
+                        <button class="btn btn-primary" onclick="openAddCategoryModal()">
+                            <i class="fas fa-plus"></i> إضافة فئة
+                        </button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الفئة</th>
+                                <th>عدد المنتجات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body">
+                            <tr><td colspan="4" class="loading">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">إضافة منتج جديد</h3>
+                <button class="close-btn" onclick="closeProductModal()">&times;</button>
+            </div>
+            
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-row">
+                    <label for="product-name">اسم المنتج</label>
+                    <input type="text" id="product-name" class="form-input" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-description">الوصف</label>
+                    <textarea id="product-description" class="form-input" rows="3"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-price">السعر</label>
+                    <input type="number" id="product-price" class="form-input" step="0.01" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-category">الفئة</label>
+                    <select id="product-category" class="form-input" required>
+                        <option value="">اختر الفئة</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-image">رابط الصورة</label>
+                    <input type="url" id="product-image" class="form-input">
+                </div>
+                
+                <div class="form-row">
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                    <button type="button" class="btn btn-outline" onclick="closeProductModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

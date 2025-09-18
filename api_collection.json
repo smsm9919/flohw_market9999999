@@ -1,0 +1,167 @@
+{
+  "info": {
+    "name": "Flohmarkt API Collection",
+    "description": "مجموعة API لمنصة فلو ماركت",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "fullname",
+              "value": "محمد أحمد"
+            },
+            {
+              "key": "email",
+              "value": "mohammed@example.com"
+            },
+            {
+              "key": "phone",
+              "value": "+966501234567"
+            },
+            {
+              "key": "password",
+              "value": "password123"
+            },
+            {
+              "key": "confirm_password",
+              "value": "password123"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/register",
+          "host": ["{{base_url}}"],
+          "path": ["register"]
+        }
+      }
+    },
+    {
+      "name": "User Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "admin@flowmarket.com"
+            },
+            {
+              "key": "password",
+              "value": "admin123"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": ["{{base_url}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Add Product",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "iPhone 14 Pro مستعمل"
+            },
+            {
+              "key": "description",
+              "value": "هاتف iPhone 14 Pro بحالة ممتازة مع جميع الملحقات"
+            },
+            {
+              "key": "price",
+              "value": "3500"
+            },
+            {
+              "key": "category_id",
+              "value": "2"
+            },
+            {
+              "key": "image",
+              "type": "file",
+              "src": "path/to/image.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/add_product",
+          "host": ["{{base_url}}"],
+          "path": ["add_product"]
+        }
+      }
+    },
+    {
+      "name": "Admin Approve Product",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/admin/approve_product/1",
+          "host": ["{{base_url}}"],
+          "path": ["admin", "approve_product", "1"]
+        }
+      }
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Get Products",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/products?category=الهواتف المحمولة",
+          "host": ["{{base_url}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "category",
+              "value": "الهواتف المحمولة"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://flowmarket.com"
+    }
+  ]
+}

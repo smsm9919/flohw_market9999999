@@ -1,0 +1,116 @@
+{
+  "site_title": "فلوماركت - سوق المستعمل المصري",
+  "navigation": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "cars": "السيارات المستعملة",
+    "jobs": "فرص العمل",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "admin": "لوحة الإدارة",
+    "logout": "تسجيل الخروج",
+    "my_products": "منتجاتي"
+  },
+  "hero": {
+    "title": "اكتشف أفضل المنتجات المستعملة في مصر",
+    "subtitle": "منصة شاملة لبيع وشراء المنتجات المستعملة بأفضل الأسعار",
+    "cta_button": "تصفح المنتجات الآن"
+  },
+  "categories": {
+    "title": "الفئات الرئيسية",
+    "mobile_phones": "الهواتف المحمولة",
+    "wireless_headphones": "سماعات لاسلكية",
+    "professional_cameras": "كاميرات احترافية",
+    "furniture": "الأثاث",
+    "fashion_accessories": "الموضة والإكسسوارات",
+    "electronics": "الإلكترونيات",
+    "used_cars": "السيارات المستعملة",
+    "job_opportunities": "فرص العمل"
+  },
+  "product": {
+    "price": "السعر",
+    "description": "الوصف",
+    "category": "الفئة",
+    "contact_seller": "راسل البائع",
+    "add_to_favorites": "أضف للمفضلة",
+    "share": "مشاركة",
+    "seller_info": "معلومات البائع",
+    "product_details": "تفاصيل المنتج",
+    "related_products": "منتجات ذات صلة",
+    "negotiate_price": "فاوض على السعر",
+    "your_offer": "عرضك",
+    "send_offer": "إرسال العرض",
+    "offer_sent": "تم إرسال عرضك بنجاح!",
+    "contact_form": {
+      "your_name": "اسمك",
+      "your_email": "بريدك الإلكتروني",
+      "message": "رسالتك",
+      "send_message": "إرسال الرسالة",
+      "message_sent": "تم إرسال رسالتك إلى البائع بنجاح!"
+    }
+  },
+  "auth": {
+    "login_title": "تسجيل الدخول",
+    "register_title": "إنشاء حساب جديد",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "full_name": "الاسم الكامل",
+    "login_button": "دخول",
+    "register_button": "إنشاء حساب",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "have_account": "لديك حساب؟",
+    "no_account": "ليس لديك حساب؟",
+    "login_error": "خطأ في البريد أو كلمة المرور"
+  },
+  "admin": {
+    "panel_title": "لوحة الإدارة",
+    "dashboard": "لوحة التحكم",
+    "users": "المستخدمين",
+    "products": "المنتجات",
+    "categories": "الفئات",
+    "messages": "الرسائل",
+    "statistics": "الإحصائيات",
+    "add_product": "إضافة منتج",
+    "edit_product": "تعديل منتج",
+    "delete_product": "حذف منتج",
+    "approve_product": "موافقة على المنتج",
+    "product_name": "اسم المنتج",
+    "product_price": "سعر المنتج",
+    "product_category": "فئة المنتج",
+    "product_description": "وصف المنتج",
+    "product_image": "صورة المنتج",
+    "save_changes": "حفظ التغييرات",
+    "cancel": "إلغاء"
+  },
+  "search": {
+    "placeholder": "ابحث عن المنتجات...",
+    "button": "بحث",
+    "results": "نتائج البحث",
+    "no_results": "لا توجد نتائج للبحث",
+    "showing_results": "عرض النتائج لـ"
+  },
+  "footer": {
+    "about": "حول فلوماركت",
+    "contact": "اتصل بنا",
+    "privacy": "سياسة الخصوصية",
+    "terms": "الشروط والأحكام",
+    "copyright": "جميع الحقوق محفوظة © 2025 فلوماركت"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "success": "تم بنجاح",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "view_details": "عرض التفاصيل",
+    "currency": "ج.م"
+  }
+}

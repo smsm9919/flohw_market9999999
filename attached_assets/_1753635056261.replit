@@ -1,0 +1,5 @@
+
+run = "python app.py"
+language = "python"
+entrypoint = "app.py"
+hidden = [".pythonlibs"]

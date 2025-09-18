@@ -1,0 +1,22 @@
+{
+  "domain": "flowmarket.com",
+  "records": [
+    {
+      "type": "CNAME",
+      "name": "@",
+      "value": "flowmarket.onrender.com",
+      "ttl": 300
+    },
+    {
+      "type": "CNAME",
+      "name": "www",
+      "value": "flowmarket.onrender.com",
+      "ttl": 300
+    }
+  ],
+  "instructions": {
+    "cloudflare": "Add CNAME records with Proxy ON (orange cloud)",
+    "godaddy": "Add CNAME records in DNS Management section",
+    "namecheap": "Add CNAME records in Advanced DNS tab"
+  }
+}

@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فلو ماركت - Flohmarkt | سوق المستعمل في مصر</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-gold: #FFD700;
+            --accent-cyan: #00d9ff;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+            --card-bg: #1e293b;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Language Direction */
+        [dir="rtl"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        [dir="ltr"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(15, 23, 42, 0.95);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            color: var(--accent-blue);
+            font-size: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-blue);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 70%;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .lang-switcher {
+            background: var(--secondary-dark);
+            color: var(--text-light);
+            border: 1px solid var(--accent-blue);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lang-switcher:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-login {
+            background: transparent;
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .btn-login:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            color: white;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(14, 165, 233, 0.3);
+        }
+        
+        .btn-cyan {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+        
+        .btn-cyan:hover {
+            background: #00c4e6;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Section */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1173&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: 1rem;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .btn-explore {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            color: white;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-explore:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent-blue);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Categories Section */
+        .categories {
+            margin: 4rem 0;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            text-align: center;
+            padding: 15px;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .category-image {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .category-card h3 {
+            font-size: 1.25rem;
+            margin: 15px 0 10px;
+            color: var(--text-light);
+        }
+
+        .category-card p {
+            color: var(--text-gray);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .category-btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        /* Products Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .product-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: var(--accent-green);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .product-description {
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .btn-buy {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        /* Forms */
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+            color: var(--accent-blue);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-gray);
+        }
+
+        .form-footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .contact-info {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-info h3 {
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            font-size: 1.5rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            min-width: 30px;
+        }
+
+        .contact-text h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text-light);
+        }
+
+        .contact-text p, .contact-text a {
+            color: var(--text-gray);
+            text-decoration: none;
+        }
+
+        .contact-text a:hover {
+            color: var(--accent-blue);
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 3rem 2rem 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-col h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--accent-green);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-blue);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-dark);
+            color: var(--text-light);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav ul {
+                gap: 0.75rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 2.25rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.75rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Image Upload */
+        .image-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-area {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed rgba(148, 163, 184, 0.3);
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 1rem;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: var(--text-gray);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .upload-text span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .btn-upload {
+            background: var(--secondary-dark);
+            color: var(--text-light);
+            border: 1px solid var(--accent-blue);
+            border-radius: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-upload:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .preview-container {
+            display: none;
+            width: 100%;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Jobs Section */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .job-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        
+        .job-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+        
+        .job-title {
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .job-company {
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .job-description {
+            color: var(--text-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .job-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .job-type {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-cyan);
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .admin-title {
+            font-size: 1.8rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 0.8rem;
+            padding: 1.2rem;
+            text-align: center;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+        
+        .admin-section {
+            margin-bottom: 2rem;
+        }
+        
+        .admin-section h3 {
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        
+        .admin-list {
+            list-style: none;
+        }
+        
+        .admin-list li {
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .admin-name {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .admin-role {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-cyan);
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-recycle"></i>
+            </div>
+            <h1>فلو ماركت | Flohmarkt</h1>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link active" data-section="home">الرئيسية</a></li>
+                <li><a href="#" class="nav-link" data-section="products">المنتجات</a></li>
+                <li><a href="#" class="nav-link" data-section="cars">سيارات مستعملة</a></li>
+                <li><a href="#" class="nav-link" data-section="jobs">فرص عمل</a></li>
+                <li><a href="#" class="nav-link" data-section="add-product">إضافة منتج</a></li>
+                <li><a href="#" class="nav-link" data-section="admin">لوحة الإدارة</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-controls">
+            <div class="lang-switcher" id="langSwitcher">
+                <i class="fas fa-globe"></i>
+                <span>العربية</span>
+            </div>
+            <div class="auth-buttons">
+                <button class="btn btn-login" data-section="login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </button>
+                <button class="btn btn-register" data-section="register">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء حساب
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="active">
+            <div class="hero">
+                <h2>اكتشف أفضل الصفقات على المنتجات المستعملة</h2>
+                <p>فلو ماركت هو وجهتك الأولى لبيع وشراء المنتجات المستعملة بجودة عالية وأسعار منافسة. انضم إلى مجتمعنا اليوم واستفد من فرص لا تنتهي!</p>
+                <button class="btn-explore" data-section="products">
+                    <i class="fas fa-shopping-bag"></i>
+                    تصفح المنتجات
+                </button>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>صفقات مميزة</h3>
+                    <p>اكتشف آلاف المنتجات المستعملة بأسعار لا تقبل المنافسة من البائعين المحليين في منطقتك</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>أمان وموثوقية</h3>
+                    <p>نضمن لك تجربة تسوق آمنة مع نظام حماية متكامل ومراجعات حقيقية للمنتجات والبائعين</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>سهولة التواصل</h3>
+                    <p>تواصل مباشرة مع البائعين وتمتع بتجربة تسوق سلسة من خلال نظام مراسلة متكامل</p>
+                </div>
+            </div>
+            
+            <!-- الفئات الرئيسية -->
+            <div class="section-header">
+                <h2 class="section-title">الفئات الرئيسية</h2>
+            </div>
+            
+            <div class="categories-grid">
+                <!-- فئة السيارات -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="سيارات مستعملة" class="category-image">
+                    <h3>🚗 سيارات مستعملة</h3>
+                    <p>اكتشف أفضل عروض السيارات المستعملة بأسعار منافسة وجودة ممتازة</p>
+                    <a href="#" class="category-btn" data-section="cars">عرض السيارات</a>
+                </div>
+                
+                <!-- فئة الإلكترونيات -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1168&q=80" alt="إلكترونيات" class="category-image">
+                    <h3>📱 إلكترونيات</h3>
+                    <p>هواتف، لابتوبات، أجهزة منزلية وأكثر بأسعار مذهلة</p>
+                    <a href="#" class="category-btn" data-section="products">عرض الإلكترونيات</a>
+                </div>
+                
+                <!-- فئة الأثاث -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="أثاث منزلي" class="category-image">
+                    <h3>🛋️ أثاث منزلي</h3>
+                    <p>أثاث منزلي أنيق وعصري بأسعار تناسب الجميع</p>
+                    <a href="#" class="category-btn" data-section="products">عرض الأثاث</a>
+                </div>
+                
+                <!-- فئة الملابس -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="ملابس وإكسسوارات" class="category-image">
+                    <h3>👕 ملابس وإكسسوارات</h3>
+                    <p>أزياء مستعملة بجودة عالية وأسعار لا تقارن</p>
+                    <a href="#" class="category-btn" data-section="products">عرض الملابس</a>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h2 class="section-title">أحدث المنتجات</h2>
+                <button class="btn-explore" data-section="products">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="Smart Watch" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">ساعة ذكية - Apple Watch Series 5</h3>
+                        <p class="product-description">ساعة ذكية بحالة ممتازة، شاشة بحالة ممتازة، جميع الميزات تعمل بشكل ممتاز، مع علبتها الأصلية وملحقاتها.</p>
+                        <div class="product-footer">
+                            <span class="product-price">5,330 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Headphones" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">سماعات لاسلكية - Sony WH-1000XM4</h3>
+                        <p class="product-description">سماعات رأس لاسلكية من سوني، بحالة ممتازة، عمر البطارية ممتاز، مع علبتها الأصلية وملحقاتها.</p>
+                        <div class="product-footer">
+                            <span class="product-price">3,690 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1564466809058-3d7f3b966bed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Camera" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">كاميرا احترافية - Canon EOS R6</h3>
+                        <p class="product-description">كاميرا احترافية بحالة ممتازة، عدد مرات الاستخدام قليلة، مع عدستين وفلاش وملحقات إضافية.</p>
+                        <div class="product-footer">
+                            <span class="product-price">47,560 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Products Section -->
+        <section id="products">
+            <div class="section-header">
+                <h2 class="section-title">جميع المنتجات</h2>
+                <div class="search-box">
+                    <input type="text" class="form-input" placeholder="ابحث عن منتج...">
+                </div>
+            </div>
+            
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="Smart Watch" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">ساعة ذكية - Apple Watch Series 5</h3>
+                        <p class="product-description">ساعة ذكية بحالة ممتازة، شاشة بحالة ممتازة، جميع الميزات تعمل بشكل ممتاز، مع علبتها الأصلية وملحقاتها.</p>
+                        <div class="product-footer">
+                            <span class="product-price">5,330 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Headphones" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">سماعات لاسلكية - Sony WH-1000XM4</h3>
+                        <p class="product-description">سماعات رأس لاسلكية من سوني، بحالة ممتازة، عمر البطارية ممتاز، مع علبتها الأصلية وملحقاتها.</p>
+                        <div class="product-footer">
+                            <span class="product-price">3,690 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1564466809058-3d7f3b966bed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Camera" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">كاميرا احترافية - Canon EOS R6</h3>
+                        <p class="product-description">كاميرا احترافية بحالة ممتازة، عدد مرات الاستخدام قليلة، مع عدستين وفلاش وملحقات إضافية.</p>
+                        <div class="product-footer">
+                            <span class="product-price">47,560 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" alt="Smartphone" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">هاتف ذكي - iPhone 12 Pro Max</h3>
+                        <p class="product-description">هاتف ذكي بحالة ممتازة، الشاشة بحالة جيدة، السعة 256 جيجابايت، مع علبته الأصلية وملحقاته.</p>
+                        <div class="product-footer">
+                            <span class="product-price">23,780 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80" alt="Gaming Console" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">إلكترونيات</span>
+                        <h3 class="product-title">جهاز ألعاب - PlayStation 5</h3>
+                        <p class="product-description">جهاز بلايستيشن 5 بحالة ممتازة، مع وحدة تحكم واحدة و 3 ألعاب، استخدام خفيف.</p>
+                        <div class="product-footer">
+                            <span class="product-price">18,040 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1122&q=80" alt="Bicycle" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">رياضة</span>
+                        <h3 class="product-title">دراجة هوائية - Specialized Sirrus 3.0</h3>
+                        <p class="product-description">دراجة هوائية بحالة ممتازة، موديل 2022، استخدام خفيف، مع خوذة وقفل وملحقات.</p>
+                        <div class="product-footer">
+                            <span class="product-price">11,070 جنيه</span>
+                            <button class="btn-buy">
+                                اشترِ الآن
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cars Section -->
+        <section id="cars" class="hidden">
+            <div class="section-header">
+                <h2 class="section-title">سيارات مستعملة</h2>
+            </div>
+            
+            <div class="products-grid">
+                <!-- سيارة مستعملة -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Used Car" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">سيارات</span>
+                        <h3 class="product-title">مرسيدس بنز C200 موديل 2018</h3>
+                        <p class="product-description">سيارة مرسيدس بنز فخمة، حالة ممتازة، فل كامل، صيانة دورية، بدون حوادث، 40,000 كم فقط.</p>
+                        <div class="product-footer">
+                            <span class="product-price">850,000 جنيه</span>
+                            <button class="btn-buy">
+                                تفاصيل السيارة
+                                <i class="fas fa-car"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- سيارة أخرى -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Used Car" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">سيارات</span>
+                        <h3 class="product-title">بي إم دبليو 520i موديل 2019</h3>
+                        <p class="product-description">سيارة بي إم دبليو فخمة، حالة الوكالة، فل كامل، بدون حوادث، ضمان الوكالة، 30,000 كم.</p>
+                        <div class="product-footer">
+                            <span class="product-price">1,150,000 جنيه</span>
+                            <button class="btn-buy">
+                                تفاصيل السيارة
+                                <i class="fas fa-car"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- سيارة أخرى -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Used Car" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">سيارات</span>
+                        <h3 class="product-title">تويوتا كورولا 2020</h3>
+                        <p class="product-description">سيارة تويوتا كورولا موديل 2020، حالة ممتازة، فل كامل، صيانة دورية، بدون حوادث، 50,000 كم.</p>
+                        <div class="product-footer">
+                            <span class="product-price">450,000 جنيه</span>
+                            <button class="btn-buy">
+                                تفاصيل السيارة
+                                <i class="fas fa-car"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- سيارة أخرى -->
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1549399542-7e7f8d874c33?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Used Car" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">سيارات</span>
+                        <h3 class="product-title">هيونداي النترا 2021</h3>
+                        <p class="product-description">سيارة هيونداي النترا موديل 2021، حالة ممتازة، فل كامل، صيانة دورية، بدون حوادث، 35,000 كم.</p>
+                        <div class="product-footer">
+                            <span class="product-price">380,000 جنيه</span>
+                            <button class="btn-buy">
+                                تفاصيل السيارة
+                                <i class="fas fa-car"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Jobs Section -->
+        <section id="jobs" class="hidden">
+            <div class="section-header">
+                <h2 class="section-title">فرص عمل متاحة</h2>
+                <button class="btn btn-cyan" id="addJobBtn">
+                    <i class="fas fa-plus"></i> إضافة وظيفة
+                </button>
+            </div>
+            
+            <div class="jobs-grid">
+                <!-- وظيفة 1 -->
+                <div class="job-card">
+                    <i class="fas fa-laptop-code job-icon"></i>
+                    <h3 class="job-title">مطور واجهات أمامية (Frontend Developer)</h3>
+                    <span class="job-company">شركة فلو ماركت للتكنولوجيا</span>
+                    <p class="job-description">نبحث عن مطور واجهات أمامية مبدع للانضمام لفريقنا، خبرة لا تقل عن 3 سنوات في تطوير واجهات المستخدم باستخدام HTML, CSS, JavaScript.</p>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> القاهرة، مصر</span>
+                        <span class="job-type">دوام كامل</span>
+                    </div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-money-bill-wave"></i> 15,000 - 20,000 جنيه</span>
+                        <span><i class="fas fa-clock"></i> منذ يومين</span>
+                    </div>
+                    <button class="btn btn-cyan" style="margin-top: 1.5rem;">
+                        <i class="fas fa-file-alt"></i> التقديم للوظيفة
+                    </button>
+                </div>
+                
+                <!-- وظيفة 2 -->
+                <div class="job-card">
+                    <i class="fas fa-chart-line job-icon"></i>
+                    <h3 class="job-title">مدير تسويق رقمي</h3>
+                    <span class="job-company">شركة فلو ماركت للتسويق</span>
+                    <p class="job-description">نبحث عن مدير تسويق رقمي لديه خبرة في إدارة الحملات الإعلانية على منصات التواصل الاجتماعي ووسائل البحث، مع خبرة لا تقل عن 4 سنوات.</p>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> الإسكندرية، مصر</span>
+                        <span class="job-type">دوام جزئي</span>
+                    </div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-money-bill-wave"></i> 10,000 - 15,000 جنيه</span>
+                        <span><i class="fas fa-clock"></i> منذ 4 أيام</span>
+                    </div>
+                    <button class="btn btn-cyan" style="margin-top: 1.5rem;">
+                        <i class="fas fa-file-alt"></i> التقديم للوظيفة
+                    </button>
+                </div>
+                
+                <!-- وظيفة 3 -->
+                <div class="job-card">
+                    <i class="fas fa-paint-brush job-icon"></i>
+                    <h3 class="job-title">مصمم جرافيك</h3>
+                    <span class="job-company">استوديو فلو ماركت للتصميم</span>
+                    <p class="job-description">نبحث عن مصمم جرافيك مبدع للانضمام لفريقنا، مع خبرة في تصميم الشعارات والمواد التسويقية والبريد الإلكتروني.</p>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> الجيزة، مصر</span>
+                        <span class="job-type">عمل حر</span>
+                    </div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-money-bill-wave"></i> 8,000 - 12,000 جنيه</span>
+                        <span><i class="fas fa-clock"></i> منذ أسبوع</span>
+                    </div>
+                    <button class="btn btn-cyan" style="margin-top: 1.5rem;">
+                        <i class="fas fa-file-alt"></i> التقديم للوظيفة
+                    </button>
+                </div>
+                
+                <!-- وظيفة 4 -->
+                <div class="job-card">
+                    <i class="fas fa-headset job-icon"></i>
+                    <h3 class="job-title">مدير خدمة العملاء</h3>
+                    <span class="job-company">مركز خدمة عملاء فلو ماركت</span>
+                    <p class="job-description">نبحث عن مدير خدمة عملاء لديه خبرة في إدارة فرق الدعم الفني، مع مهارات اتصال ممتازة وقدرة على حل المشكلات.</p>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> القاهرة، مصر</span>
+                        <span class="job-type">دوام كامل</span>
+                    </div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-money-bill-wave"></i> 12,000 - 18,000 جنيه</span>
+                        <span><i class="fas fa-clock"></i> منذ 3 أيام</span>
+                    </div>
+                    <button class="btn btn-cyan" style="margin-top: 1.5rem;">
+                        <i class="fas fa-file-alt"></i> التقديم للوظيفة
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Add Job Section -->
+        <section id="add-job" class="hidden">
+            <div class="section-header">
+                <h2 class="section-title">إضافة وظيفة جديدة</h2>
+            </div>
+            
+            <div class="form-container">
+                <h3 class="form-title">تفاصيل الوظيفة</h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="jobTitle">المسمى الوظيفي</label>
+                    <input type="text" id="jobTitle" class="form-input" placeholder="أدخل المسمى الوظيفي">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="jobCompany">اسم الشركة</label>
+                    <input type="text" id="jobCompany" class="form-input" placeholder="أدخل اسم الشركة">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="jobLocation">الموقع</label>
+                    <input type="text" id="jobLocation" class="form-input" placeholder="أدخل موقع العمل">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="jobType">نوع الوظيفة</label>
+                    <select id="jobType" class="form-input">
+                        <option value="">اختر نوع الوظيفة</option>
+                        <option value="دوام كامل">دوام كامل</option>
+                        <option value="دوام جزئي">دوام جزئي</option>
+                        <option value="عمل حر">عمل حر</option>
+                        <option value="تدريب">تدريب</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="jobSalary">الراتب (اختياري)</label>
+                    <input type="text" id="jobSalary" class="form-input" placeholder="أدخل نطاق الراتب">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="jobDescription">وصف الوظيفة</label>
+                    <textarea id="jobDescription" class="form-input" rows="6" placeholder="أدخل وصفاً تفصيلياً للوظيفة والمتطلبات"></textarea>
+                </div>
+                
+                <button class="btn-submit" id="saveJobBtn">
+                    <i class="fas fa-save"></i>
+                    حفظ الوظيفة
+                </button>
+            </div>
+        </section>
+        
+        <!-- Add Product Section -->
+        <section id="add-product" class="hidden">
+            <div class="section-header">
+                <h2 class="section-title">إضافة منتج جديد</h2>
+            </div>
+            
+            <div class="form-container">
+                <h3 class="form-title">بيانات المنتج</h3>
+                
+                <div class="image-upload">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p class="upload-text">اسحب وأسقط صورة هنا أو <span>انقر للاختيار</span></p>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                    <button class="btn-upload" id="uploadBtn">
+                        <i class="fas fa-upload"></i>
+                        رفع صورة
+                    </button>
+                    <div class="preview-container" id="previewContainer">
+                        <img id="previewImage" class="preview-image" src="" alt="Preview">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="productName">اسم المنتج</label>
+                    <input type="text" id="productName" class="form-input" placeholder="أدخل اسم المنتج">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="productCategory">الفئة</label>
+                    <select id="productCategory" class="form-input">
+                        <option value="">اختر فئة المنتج</option>
+                        <option value="electronics">إلكترونيات</option>
+                        <option value="furniture">أثاث</option>
+                        <option value="clothing">ملابس</option>
+                        <option value="books">كتب</option>
+                        <option value="sports">رياضة</option>
+                        <option value="cars">سيارات</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="productPrice">السعر (جنيه مصري)</label>
+                    <input type="number" id="productPrice" class="form-input" placeholder="أدخل سعر المنتج">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="productDescription">وصف المنتج</label>
+                    <textarea id="productDescription" class="form-input" rows="4" placeholder="أدخل وصفاً تفصيلياً للمنتج"></textarea>
+                </div>
+                
+                <button class="btn-submit">
+                    <i class="fas fa-plus-circle"></i>
+                    إضافة المنتج
+                </button>
+            </div>
+        </section>
+        
+        <!-- Admin Panel Section -->
+        <section id="admin" class="hidden">
+            <div class="section-header">
+                <h2 class="section-title">لوحة إدارة فلو ماركت</h2>
+            </div>
+            
+            <div class="admin-panel">
+                <h2 class="admin-title">مركز التحكم والإدارة</h2>
+                
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">1,248</div>
+                        <div class="stat-label">منتج معروض</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8,421</div>
+                        <div class="stat-label">مستخدم نشط</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">142</div>
+                        <div class="stat-label">طلب جديد</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">EGP 2.1M</div>
+                        <div class="stat-label">مبيعات الشهر</div>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>فريق الإدارة</h3>
+                    <ul class="admin-list">
+                        <li>
+                            <div class="admin-name">
+                                <i class="fas fa-user-circle"></i>
+                                أحمد محمد
+                            </div>
+                            <span class="admin-role">المدير العام</span>
+                        </li>
+                        <li>
+                            <div class="admin-name">
+                                <i class="fas fa-user-circle"></i>
+                                ليلى أحمد
+                            </div>
+                            <span class="admin-role">مدير المنتجات</span>
+                        </li>
+                        <li>
+                            <div class="admin-name">
+                                <i class="fas fa-user-circle"></i>
+                                عمر خالد
+                            </div>
+                            <span class="admin-role">مدير التسويق</span>
+                        </li>
+                        <li>
+                            <div class="admin-name">
+                                <i class="fas fa-user-circle"></i>
+                                سارة محمود
+                            </div>
+                            <span class="admin-role">مدير خدمة العملاء</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>إدارة المحتوى</h3>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button class="btn btn-cyan">
+                            <i class="fas fa-plus"></i> إضافة منتج جديد
+                        </button>
+                        <button class="btn btn-cyan">
+                            <i class="fas fa-edit"></i> تعديل المنتجات
+                        </button>
+                        <button class="btn btn-cyan">
+                            <i class="fas fa-users"></i> إدارة المستخدمين
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Login Section -->
+        <section id="login" class="hidden">
+            <div class="form-container">
+                <h3 class="form-title">تسجيل الدخول</h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="أدخل كلمة المرور">
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-footer">
+                        <a href="#">هل نسيت كلمة المرور؟</a>
+                    </div>
+                </div>
+                
+                <button class="btn-submit">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </button>
+                
+                <div class="form-footer">
+                    ليس لديك حساب؟ <a href="#" data-section="register">إنشاء حساب جديد</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Register Section -->
+        <section id="register" class="hidden">
+            <div class="form-container">
+                <h3 class="form-title">إنشاء حساب جديد</h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerName">الاسم الكامل</label>
+                    <input type="text" id="registerName" class="form-input" placeholder="أدخل اسمك الكامل">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">البريد الإلكتروني</label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerPhone">رقم الهاتف</label>
+                    <input type="tel" id="registerPhone" class="form-input" placeholder="أدخل رقم هاتفك">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">كلمة المرور</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="أنشئ كلمة مرور قوية">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="registerConfirm">تأكيد كلمة المرور</label>
+                    <input type="password" id="registerConfirm" class="form-input" placeholder="أعد إدخال كلمة المرور">
+                </div>
+                
+                <button class="btn-submit">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء حساب
+                </button>
+                
+                <div class="form-footer">
+                    لديك حساب بالفعل؟ <a href="#" data-section="login">تسجيل الدخول</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>عن فلو ماركت</h3>
+                <p>فلو ماركت هو منصة رائدة لبيع وشراء المنتجات المستعملة في مصر. نسعى لتوفير تجربة تسوق آمنة وسهلة لجميع المستخدمين.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="#" data-section="home"><i class="fas fa-chevron-left"></i> الرئيسية</a></li>
+                    <li><a href="#" data-section="products"><i class="fas fa-chevron-left"></i> المنتجات</a></li>
+                    <li><a href="#" data-section="cars"><i class="fas fa-chevron-left"></i> سيارات مستعملة</a></li>
+                    <li><a href="#" data-section="jobs"><i class="fas fa-chevron-left"></i> فرص عمل</a></li>
+                    <li><a href="#" data-section="admin"><i class="fas fa-chevron-left"></i> لوحة الإدارة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>الفئات</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> إلكترونيات</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> أثاث منزلي</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> ملابس وإكسسوارات</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> سيارات ومركبات</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> كتب ووسائل تعليمية</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>الدعم والمساعدة</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> الأسئلة الشائعة</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> سياسة البيع</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> سياسة الخصوصية</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> شروط الاستخدام</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> اتصل بنا</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2023 فلو ماركت - Flohmarkt. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Section Navigation
+        document.querySelectorAll('.nav-link, .btn-explore, .btn, .footer-links a, .category-btn').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetSection = this.getAttribute('data-section');
+                
+                // Hide all sections
+                document.querySelectorAll('section').forEach(section => {
+                    section.classList.remove('active');
+                    section.classList.add('hidden');
+                });
+                
+                // Show target section
+                const targetElement = document.getElementById(targetSection);
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                    targetElement.classList.remove('hidden');
+                }
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                
+                // If it's a nav link, set it as active
+                if (this.classList.contains('nav-link')) {
+                    this.classList.add('active');
+                }
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+        });
+        
+        // Language Switcher
+        const langSwitcher = document.getElementById('langSwitcher');
+        const languages = ['العربية', 'Deutsch', 'English'];
+        let currentLangIndex = 0;
+        
+        langSwitcher.addEventListener('click', function() {
+            currentLangIndex = (currentLangIndex + 1) % languages.length;
+            this.querySelector('span').textContent = languages[currentLangIndex];
+            
+            // For demonstration, toggle text direction
+            if (currentLangIndex === 0) {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+            } else if (currentLangIndex === 1) {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'de';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+            }
+        });
+        
+        // Image Upload Functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const imageInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        
+        uploadArea.addEventListener('click', function() {
+            imageInput.click();
+        });
+        
+        uploadBtn.addEventListener('click', function() {
+            imageInput.click();
+        });
+        
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    uploadArea.style.display = 'none';
+                    uploadBtn.style.display = 'none';
+                }
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        
+        // Form Submission (Demo)
+        document.querySelectorAll('.btn-submit').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('تم إرسال البيانات بنجاح! (هذا عرض تجريبي)');
+                
+                // Reset form
+                const form = this.closest('form');
+                if (form) form.reset();
+                
+                // For add-job section, go back to jobs
+                if (this.id === 'saveJobBtn') {
+                    document.querySelectorAll('section').forEach(section => {
+                        section.classList.remove('active');
+                        section.classList.add('hidden');
+                    });
+                    document.getElementById('jobs').classList.add('active');
+                    document.getElementById('jobs').classList.remove('hidden');
+                }
+            });
+        });
+        
+        // Buy Button
+        document.querySelectorAll('.btn-buy').forEach(button => {
+            button.addEventListener('click', function() {
+                alert('تمت إضافة المنتج إلى سلة المشتريات! (هذا عرض تجريبي)');
+            });
+        });
+        
+        // Job Application Button
+        document.querySelectorAll('.btn-cyan').forEach(button => {
+            if (!button.id) {
+                button.addEventListener('click', function() {
+                    alert('تم التقديم للوظيفة بنجاح! (هذا عرض تجريبي)');
+                });
+            }
+        });
+        
+        // Add Job Button
+        document.getElementById('addJobBtn').addEventListener('click', function() {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+                section.classList.add('hidden');
+            });
+            document.getElementById('add-job').classList.add('active');
+            document.getElementById('add-job').classList.remove('hidden');
+        });
+        
+        // User Authentication Demo
+        document.getElementById('login').querySelector('.btn-submit').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if(email && password) {
+                alert('تم تسجيل الدخول بنجاح!');
+                // Hide login/register buttons
+                document.querySelector('.btn-login').style.display = 'none';
+                document.querySelector('.btn-register').style.display = 'none';
+                
+                // Show user profile button
+                const userProfile = document.createElement('button');
+                userProfile.className = 'btn btn-cyan';
+                userProfile.innerHTML = '<i class="fas fa-user"></i> حسابي';
+                document.querySelector('.auth-buttons').appendChild(userProfile);
+            } else {
+                alert('يرجى ملء جميع الحقول!');
+            }
+        });
+        
+        document.getElementById('register').querySelector('.btn-submit').addEventListener('click', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            
+            if(name && email && phone && password && confirm) {
+                if(password === confirm) {
+                    alert('تم إنشاء الحساب بنجاح!');
+                    // Hide login/register buttons
+                    document.querySelector('.btn-login').style.display = 'none';
+                    document.querySelector('.btn-register').style.display = 'none';
+                    
+                    // Show user profile button
+                    const userProfile = document.createElement('button');
+                    userProfile.className = 'btn btn-cyan';
+                    userProfile.innerHTML = '<i class="fas fa-user"></i> حسابي';
+                    document.querySelector('.auth-buttons').appendChild(userProfile);
+                    
+                    // Go to home page
+                    document.querySelectorAll('section').forEach(section => {
+                        section.classList.remove('active');
+                        section.classList.add('hidden');
+                    });
+                    document.getElementById('home').classList.add('active');
+                } else {
+                    alert('كلمتا المرور غير متطابقتين!');
+                }
+            } else {
+                alert('يرجى ملء جميع الحقول!');
+            }
+        });
+    </script>
+</body>
+</html>

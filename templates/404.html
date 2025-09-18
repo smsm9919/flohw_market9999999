@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة غير موجودة - فلو ماركت</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    {% include 'base.html' %}
+    
+    <main class="container" style="margin-top: 100px; padding: 40px 20px; text-align: center;">
+        <div class="error-container">
+            <i class="fas fa-exclamation-triangle" style="font-size: 80px; color: #e74c3c; margin-bottom: 20px;"></i>
+            <h1 style="font-size: 48px; margin-bottom: 20px; color: var(--text);">404</h1>
+            <h2 style="margin-bottom: 20px; color: var(--text);">الصفحة غير موجودة</h2>
+            <p style="margin-bottom: 30px; color: var(--muted);">عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.</p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">العودة للصفحة الرئيسية</a>
+        </div>
+    </main>
+</body>
+</html>

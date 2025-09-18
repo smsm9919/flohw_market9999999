@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title">إنشاء حساب</h2>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="POST" class="form">
+    <label>الاسم الكامل</label>
+    <input type="text" name="fullname" class="form-input" required>
+
+    <label>البريد الإلكتروني</label>
+    <input type="email" name="email" class="form-input" required>
+
+    <label>رقم الهاتف</label>
+    <input type="text" name="phone" class="form-input">
+
+    <label>كلمة المرور</label>
+    <input type="password" name="password" class="form-input" required>
+
+    <label>تأكيد كلمة المرور</label>
+    <input type="password" name="confirm_password" class="form-input" required>
+
+    <button type="submit" class="btn btn-primary">تسجيل</button>
+</form>
+{% endblock %}

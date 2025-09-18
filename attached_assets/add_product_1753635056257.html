@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title">إضافة منتج جديد</h2>
+
+<form method="POST" class="form">
+    <label>اسم المنتج</label>
+    <input type="text" name="name" class="form-input" required>
+
+    <label>الوصف</label>
+    <textarea name="description" class="form-input" rows="4"></textarea>
+
+    <label>السعر</label>
+    <input type="number" name="price" step="0.01" class="form-input" required>
+
+    <label>الفئة</label>
+    <select name="category" class="form-input">
+        {% for c in categories %}
+            <option value="{{ c['id'] }}">{{ c['name'] }}</option>
+        {% endfor %}
+    </select>
+
+    <label>رابط الصورة (اختياري)</label>
+    <input type="text" name="image_url" class="form-input" placeholder="https://example.com/image.jpg">
+
+    <button type="submit" class="btn btn-primary">حفظ</button>
+</form>
+{% endblock %}

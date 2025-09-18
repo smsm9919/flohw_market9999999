@@ -1,0 +1,116 @@
+{
+  "site_title": "Flohmarkt - Egyptian Used Goods Marketplace",
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "cars": "Used Cars",
+    "jobs": "Job Opportunities",
+    "login": "Login",
+    "register": "Register",
+    "admin": "Admin Panel",
+    "logout": "Logout",
+    "my_products": "My Products"
+  },
+  "hero": {
+    "title": "Discover the Best Used Products in Egypt",
+    "subtitle": "A comprehensive platform for buying and selling used products at the best prices",
+    "cta_button": "Browse Products Now"
+  },
+  "categories": {
+    "title": "Main Categories",
+    "mobile_phones": "Mobile Phones",
+    "wireless_headphones": "Wireless Headphones",
+    "professional_cameras": "Professional Cameras",
+    "furniture": "Furniture",
+    "fashion_accessories": "Fashion & Accessories",
+    "electronics": "Electronics",
+    "used_cars": "Used Cars",
+    "job_opportunities": "Job Opportunities"
+  },
+  "product": {
+    "price": "Price",
+    "description": "Description",
+    "category": "Category",
+    "contact_seller": "Contact Seller",
+    "add_to_favorites": "Add to Favorites",
+    "share": "Share",
+    "seller_info": "Seller Information",
+    "product_details": "Product Details",
+    "related_products": "Related Products",
+    "negotiate_price": "Negotiate Price",
+    "your_offer": "Your Offer",
+    "send_offer": "Send Offer",
+    "offer_sent": "Your offer has been sent successfully!",
+    "contact_form": {
+      "your_name": "Your Name",
+      "your_email": "Your Email",
+      "message": "Your Message",
+      "send_message": "Send Message",
+      "message_sent": "Your message has been sent to the seller successfully!"
+    }
+  },
+  "auth": {
+    "login_title": "Login",
+    "register_title": "Create New Account",
+    "email": "Email",
+    "password": "Password",
+    "full_name": "Full Name",
+    "login_button": "Login",
+    "register_button": "Register",
+    "forgot_password": "Forgot Password?",
+    "have_account": "Have an account?",
+    "no_account": "Don't have an account?",
+    "login_error": "Invalid email or password"
+  },
+  "admin": {
+    "panel_title": "Admin Panel",
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "products": "Products",
+    "categories": "Categories",
+    "messages": "Messages",
+    "statistics": "Statistics",
+    "add_product": "Add Product",
+    "edit_product": "Edit Product",
+    "delete_product": "Delete Product",
+    "approve_product": "Approve Product",
+    "product_name": "Product Name",
+    "product_price": "Product Price",
+    "product_category": "Product Category",
+    "product_description": "Product Description",
+    "product_image": "Product Image",
+    "save_changes": "Save Changes",
+    "cancel": "Cancel"
+  },
+  "search": {
+    "placeholder": "Search for products...",
+    "button": "Search",
+    "results": "Search Results",
+    "no_results": "No results found",
+    "showing_results": "Showing results for"
+  },
+  "footer": {
+    "about": "About Flohmarkt",
+    "contact": "Contact Us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "copyright": "All rights reserved © 2025 Flohmarkt"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Confirm",
+    "close": "Close",
+    "view_details": "View Details",
+    "currency": "EGP"
+  }
+}

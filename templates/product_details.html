@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="product-details">
+    <div class="left">
+        <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}">
+    </div>
+    <div class="right">
+        <h1>{{ product['name'] }}</h1>
+        <p class="cat">{{ product['category_name'] }}</p>
+        <p class="desc">{{ product['description'] }}</p>
+        <h2 class="price">{{ "{:,.0f}".format(product['price']) }} جنيه</h2>
+        <p class="owner">البائع: {{ product['fullname'] }}</p>
+        
+        {% if current_user.is_authenticated and current_user.id != product.user_id %}
+        <!-- Price Negotiation Section -->
+        <div class="price-negotiation" id="negotiationSection">
+            <h3>تفاوض على السعر</h3>
+            <div class="price-slider-container">
+                <label for="priceSlider">اقترح سعرك:</label>
+                <div class="slider-wrapper">
+                    <input type="range" 
+                           id="priceSlider" 
+                           min="{{ (product['price'] * 0.3)|round|int }}" 
+                           max="{{ product['price'] }}" 
+                           value="{{ (product['price'] * 0.8)|round|int }}" 
+                           class="price-slider">
+                    <div class="price-display">
+                        <span id="proposedPrice">{{ (product['price'] * 0.8)|round|int }}</span> جنيه
+                    </div>
+                </div>
+                <div class="price-range-labels">
+                    <span>{{ (product['price'] * 0.3)|round|int }}</span>
+                    <span>{{ product['price'] }}</span>
+                </div>
+            </div>
+            
+            <div class="negotiation-form">
+                <textarea id="negotiationMessage" 
+                          placeholder="أضف رسالة (اختياري)" 
+                          maxlength="500"></textarea>
+                <button id="sendNegotiation" class="btn btn-primary">
+                    <i class="fas fa-handshake"></i> إرسال عرض السعر
+                </button>
+            </div>
+            
+            <div id="negotiationResult" class="negotiation-result"></div>
+        </div>
+        {% elif current_user.is_authenticated %}
+        <div class="owner-message">
+            <p><i class="fas fa-info-circle"></i> هذا منتجك الخاص</p>
+            {% if current_user.role == 'admin' %}
+            <div class="admin-controls">
+                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> تعديل المنتج
+                </a>
+                <a href="{{ url_for('delete_product', product_id=product.id) }}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                    <i class="fas fa-trash"></i> حذف المنتج
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="login-prompt">
+            <p>سجل دخولك للتفاوض على السعر</p>
+            <a href="{{ url_for('login') }}" class="btn btn-primary">تسجيل الدخول</a>
+        </div>
+        {% endif %}
+        
+        <!-- Contact Seller Section -->
+        <div class="contact-seller-section" style="margin-top: 20px;">
+            <button type="button" class="btn btn-success contact-seller-btn" data-bs-toggle="modal" data-bs-target="#contactSellerModal">
+                <i class="fas fa-envelope"></i> 📩 مراسلة البائع
+            </button>
+            
+            {% if product.get('seller_phone') %}
+            <a href="tel:{{ product.get('seller_phone') }}" class="btn btn-info" style="margin-left: 10px;">
+                <i class="fas fa-phone"></i> 📞 اتصال بالبائع
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Contact Seller Modal -->
+<div class="modal fade" id="contactSellerModal" tabindex="-1" aria-labelledby="contactSellerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactSellerModalLabel">
+                    📩 مراسلة البائع: {{ product['fullname'] }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contactSellerForm">
+                    <input type="hidden" id="productId" value="{{ product.id }}">
+                    <input type="hidden" id="sellerId" value="{{ product.user_id }}">
+                    
+                    <div class="mb-3">
+                        <label for="buyerName" class="form-label">الاسم</label>
+                        <input type="text" class="form-control" id="buyerName" required 
+                               {% if current_user.is_authenticated %}
+                               value="{{ current_user.fullname }}" readonly style="background-color: #f8f9fa;"
+                               {% else %}
+                               placeholder="اكتب اسمك"
+                               {% endif %}>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="buyerEmail" class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" id="buyerEmail" required 
+                               {% if current_user.is_authenticated %}
+                               value="{{ current_user.email }}" readonly style="background-color: #f8f9fa;"
+                               {% else %}
+                               placeholder="example@email.com"
+                               {% endif %}>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="messageText" class="form-label">الرسالة</label>
+                        <textarea class="form-control" id="messageText" rows="4" required placeholder="اكتب رسالتك للبائع هنا..."></textarea>
+                    </div>
+                </form>
+                <div id="contactResult"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="sendContactMessage">
+                    <i class="fas fa-paper-plane"></i> إرسال الرسالة
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const priceSlider = document.getElementById('priceSlider');
+    const proposedPriceDisplay = document.getElementById('proposedPrice');
+    const sendButton = document.getElementById('sendNegotiation');
+    const messageTextarea = document.getElementById('negotiationMessage');
+    const resultDiv = document.getElementById('negotiationResult');
+    
+    if (priceSlider) {
+        // Update price display when slider moves
+        priceSlider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            proposedPriceDisplay.textContent = value.toLocaleString();
+            
+            // Change color based on percentage of original price
+            const originalPrice = {{ product['price'] }};
+            const percentage = (value / originalPrice) * 100;
+            
+            if (percentage < 50) {
+                this.style.background = '#ff4757';
+            } else if (percentage < 75) {
+                this.style.background = '#ffa502';
+            } else {
+                this.style.background = '#2ed573';
+            }
+        });
+        
+        // Send negotiation
+        sendButton.addEventListener('click', function() {
+            const proposedPrice = parseInt(priceSlider.value);
+            const message = messageTextarea.value.trim();
+            
+            // Disable button during request
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            
+            fetch('/api/negotiate_price', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: {{ product['id'] }},
+                    offered_price: proposedPrice,
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> ${data.message}
+                        </div>
+                    `;
+                    sendButton.innerHTML = '<i class="fas fa-check"></i> تم الإرسال';
+                    setTimeout(() => {
+                        sendButton.innerHTML = '<i class="fas fa-handshake"></i> إرسال عرض السعر';
+                        sendButton.disabled = false;
+                    }, 3000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-circle"></i> ${data.message}
+                        </div>
+                    `;
+                    sendButton.innerHTML = '<i class="fas fa-handshake"></i> إرسال عرض السعر';
+                    sendButton.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i> حدث خطأ في الاتصال
+                    </div>
+                `;
+                sendButton.innerHTML = '<i class="fas fa-handshake"></i> إرسال عرض السعر';
+                sendButton.disabled = false;
+            });
+        });
+    }
+    
+    // Contact Seller functionality
+    const sendContactButton = document.getElementById('sendContactMessage');
+    const contactResult = document.getElementById('contactResult');
+    
+    if (sendContactButton) {
+        sendContactButton.addEventListener('click', function() {
+            const productId = document.getElementById('productId').value;
+            const sellerId = document.getElementById('sellerId').value;
+            const buyerName = document.getElementById('buyerName').value.trim();
+            const buyerEmail = document.getElementById('buyerEmail').value.trim();
+            const messageText = document.getElementById('messageText').value.trim();
+            
+            // Validation
+            if (!buyerName || !buyerEmail || !messageText) {
+                contactResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> يرجى ملء جميع الحقول
+                    </div>
+                `;
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(buyerEmail)) {
+                contactResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> يرجى إدخال بريد إلكتروني صحيح
+                    </div>
+                `;
+                return;
+            }
+            
+            // Disable button during request
+            sendContactButton.disabled = true;
+            sendContactButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            
+            fetch('/api/contact_seller', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    seller_id: sellerId,
+                    buyer_name: buyerName,
+                    buyer_email: buyerEmail,
+                    message_text: messageText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    contactResult.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> ✅ تم إرسال رسالتك إلى البائع بنجاح!
+                        </div>
+                    `;
+                    // Clear form
+                    document.getElementById('contactSellerForm').reset();
+                    // Auto-close modal after 3 seconds
+                    setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('contactSellerModal'));
+                        if (modal) modal.hide();
+                    }, 3000);
+                } else {
+                    contactResult.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> ${data.message}
+                        </div>
+                    `;
+                }
+                
+                sendContactButton.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الرسالة';
+                sendContactButton.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                contactResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى
+                    </div>
+                `;
+                sendContactButton.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الرسالة';
+                sendContactButton.disabled = false;
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

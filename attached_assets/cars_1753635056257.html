@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title">سيارات مستعملة</h2>
+<div class="products-grid">
+    {% for car in cars %}
+    <a class="product-card" href="{{ url_for('product_details', pid=car['id']) }}">
+        <img src="{{ car['image_url'] }}" alt="{{ car['name'] }}">
+        <div class="product-info">
+            <h3 class="product-title">{{ car['name'] }}</h3>
+            <div class="product-footer">
+                <span class="product-price">{{ "{:,.0f}".format(car['price']) }} جنيه</span>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

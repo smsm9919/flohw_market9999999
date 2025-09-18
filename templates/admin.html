@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 class="section-title">لوحة الإدارة</h2>
+    <a href="{{ url_for('admin_panel') }}" class="btn btn-primary">
+        <i class="fas fa-cog"></i> لوحة الإدارة المتقدمة
+    </a>
+</div>
+
+<div class="dashboard-cards">
+    <div class="card">
+        <h3>إجمالي المنتجات</h3>
+        <p class="num">{{ products_count }}</p>
+    </div>
+    <div class="card">
+        <h3>عدد المستخدمين</h3>
+        <p class="num">{{ users_count }}</p>
+    </div>
+    <div class="card">
+        <h3>منتجات الشهر</h3>
+        <p class="num">{{ new_products }}</p>
+    </div>
+</div>
+
+<h3>فريق الإدارة</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>البريد الإلكتروني</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for admin in admins %}
+        <tr>
+            <td>{{ admin['id'] }}</td>
+            <td>{{ admin['fullname'] }}</td>
+            <td>{{ admin['email'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>آخر المنتجات</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>الفئة</th>
+            <th>السعر</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in recent_products %}
+        <tr>
+            <td>{{ p['id'] }}</td>
+            <td>{{ p['name'] }}</td>
+            <td>{{ p['category_name'] }}</td>
+            <td>{{ "{:,.0f}".format(p['price']) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

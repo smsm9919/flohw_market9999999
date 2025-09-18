@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-header">
+    <h2 class="section-title">جميع المنتجات</h2>
+    <div class="search-box">
+        <input type="text" class="form-input" placeholder="ابحث عن منتج...">
+    </div>
+</div>
+
+<div class="products-grid" id="products-container">
+    {% for product in products %}
+    <a class="product-card" href="{{ url_for('product_details', pid=product['id']) }}">
+        <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}" class="product-image">
+        <div class="product-info">
+            <span class="product-category">{{ product['category_name'] or 'فئة أخرى' }}</span>
+            <h3 class="product-title">{{ product['name'] }}</h3>
+            <p class="product-description">{{ product['description'] }}</p>
+            <div class="product-footer">
+                <span class="product-price">{{ "{:,.0f}".format(product['price']) }} جنيه</span>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

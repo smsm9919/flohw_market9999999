@@ -1,0 +1,115 @@
+🔧 AI Developer Prompt — Enable Seller Messaging & Call Features (Full Activation)
+You are required to fully implement and activate both of the following key features in the marketplace site:
+
+✅ Message the Seller via email (functional contact form)
+
+✅ Call the Seller via phone (direct call link)
+
+These features must be fully operational and not placeholders. Follow the steps below precisely and do not skip any part.
+
+✅ Feature 1: Message the Seller (via email)
+🖥️ Frontend (HTML Template):
+Insert this message form in every product page:
+
+html
+Copy
+Edit
+<form action="/send_message" method="POST" style="margin-top: 15px;">
+  <input type="hidden" name="email" value="{{ product.seller_email }}">
+  <textarea name="message" placeholder="Write your message to the seller..." required></textarea>
+  <button type="submit">📨 Send Message</button>
+</form>
+⚙️ Backend - Option A: Using Flask (Python)
+Add this to your main.py:
+
+python
+Copy
+Edit
+from flask import request
+import smtplib
+from email.message import EmailMessage
+
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    recipient = request.form["email"]
+    message_body = request.form["message"]
+
+    msg = EmailMessage()
+    msg.set_content(message_body)
+    msg["Subject"] = "Message from a buyer"
+    msg["From"] = "yourstore@example.com"  # Replace with actual
+    msg["To"] = recipient
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login("yourstore@example.com", "APP_PASSWORD")  # Use Replit Secrets
+        smtp.send_message(msg)
+
+    return "✅ Message sent successfully."
+💡 Security tip: Do not hardcode credentials. Use environment variables or Replit secrets.
+
+⚙️ Backend - Option B: Using Node.js with Nodemailer
+js
+Copy
+Edit
+const nodemailer = require('nodemailer');
+app.post("/send_message", async (req, res) => {
+  const { email, message } = req.body;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+
+  await transporter.sendMail({
+    from: '"AutoMarket" <yourstore@example.com>',
+    to: email,
+    subject: "New message from a buyer",
+    text: message
+  });
+
+  res.send("✅ Email sent successfully.");
+});
+✅ Feature 2: Call the Seller (via phone)
+🖥️ Frontend (HTML):
+Inside the product page, use this:
+
+html
+Copy
+Edit
+{% if product.seller_phone %}
+  <a href="tel:{{ product.seller_phone }}" class="call-button">📞 Call Seller</a>
+{% endif %}
+🎨 Optional CSS:
+css
+Copy
+Edit
+.call-button {
+  background-color: #27ae60;
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 10px;
+}
+🧪 Post-Deployment Checklist:
+✅ Pressing "Send Message" must send a real email to the seller.
+
+✅ "Call Seller" must open a phone dialer on mobile devices.
+
+✅ Message form must not submit empty content.
+
+✅ Test both features with real seller email and phone.
+
+⛔️ Prohibited:
+❌ Do not leave any dummy buttons or non-functional links.
+
+❌ Do not skip backend implementation.
+
+❌ Do not expose sensitive credentials in code.
+
+✅ This prompt is final. Implement it exactly as described and verify functionality end-to-end. No part should be skipped.
+

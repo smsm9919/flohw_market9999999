@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="product-details">
+    <div class="left">
+        <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}">
+    </div>
+    <div class="right">
+        <h1>{{ product['name'] }}</h1>
+        <p class="cat">{{ product['category_name'] }}</p>
+        <p class="desc">{{ product['description'] }}</p>
+        <h2 class="price">{{ "{:,.0f}".format(product['price']) }} جنيه</h2>
+        <p class="owner">البائع: {{ product['fullname'] }}</p>
+        <a href="#" class="btn btn-primary">تواصل مع البائع</a>
+    </div>
+</div>
+{% endblock %}

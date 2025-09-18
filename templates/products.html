@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="products-hero">
+    <div class="products-hero-content">
+        <h1 class="products-hero-title">
+            {% if current_category %}
+                {{ current_category }} - منتجات مستعملة بحالة ممتازة
+            {% else %}
+                جميع المنتجات المستعملة - ابحث عن أفضل الصفقات
+            {% endif %}
+        </h1>
+        <p class="products-hero-subtitle">
+            تصفح منتجات عالية الجودة بأسعار مناسبة، أو أضف منتجك المستعمل للبيع
+        </p>
+        
+        <!-- Add Product Button - Prominent -->
+        {% if current_user.is_authenticated %}
+        <div class="hero-action">
+            <a href="{{ url_for('add_product') }}{% if current_category %}?category={{ current_category }}{% endif %}" 
+               class="btn btn-add-product-hero">
+                <i class="fas fa-plus-circle"></i>
+                <span>أضف منتجك المستعمل للبيع</span>
+                <small>سريع ومجاني!</small>
+            </a>
+        </div>
+        {% else %}
+        <div class="hero-action">
+            <button onclick="showLoginPopup('{{ current_category or 'عام' }}')" class="btn btn-add-product-hero">
+                <i class="fas fa-plus-circle"></i>
+                <span>أضف منتجك المستعمل للبيع</span>
+                <small>سريع ومجاني!</small>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="section-header">
+    <div class="section-title-container">
+        <h2 class="section-title">
+            {% if current_category %}
+                {{ current_category }}
+            {% else %}
+                جميع المنتجات
+            {% endif %}
+        </h2>
+        <div class="search-box">
+            <input type="text" class="form-input" placeholder="ابحث عن منتج..." id="product-search">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Category Filter -->
+<div class="filter-section">
+    <div class="filter-tabs">
+        <a href="{{ url_for('products') }}" class="filter-tab {% if not current_category %}active{% endif %}">
+            الكل
+        </a>
+        {% for category in categories %}
+        <a href="{{ url_for('products') }}?category={{ category.name }}" 
+           class="filter-tab {% if current_category == category.name %}active{% endif %}">
+            {{ category.name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="products-grid" id="products-container">
+    {% for product in products %}
+    <div class="product-card-wrapper">
+        <a class="product-card" href="{{ url_for('product_details', product_id=product['id']) }}">
+            <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}" class="product-image">
+            <div class="product-info">
+                <span class="product-category">{{ product['category_name'] or 'فئة أخرى' }}</span>
+                <h3 class="product-title">{{ product['name'] }}</h3>
+            <p class="product-description">{{ product['description'] }}</p>
+            <div class="product-footer">
+                <span class="product-price">
+                    {% if product['price'] > 0 %}
+                        {{ "{:,.0f}".format(product['price']) }} جنيه
+                    {% else %}
+                        راتب حسب الاتفاق
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        </a>
+        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+        <div class="admin-overlay">
+            <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-admin-edit">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a href="{{ url_for('delete_product', product_id=product.id) }}" 
+               class="btn btn-admin-delete"
+               onclick="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% if not products %}
+<div class="empty-state">
+    <i class="fas fa-box-open" style="font-size: 64px; color: var(--muted); margin-bottom: 16px;"></i>
+    <h3>لا توجد منتجات مستعملة</h3>
+    <p>كن أول من يضيف منتج مستعمل في هذه الفئة!</p>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('add_product') }}{% if current_category %}?category={{ current_category }}{% endif %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> أضف منتجك الآن
+    </a>
+    {% else %}
+    <button onclick="showLoginPopup('{{ current_category or 'عام' }}')" class="btn btn-primary">
+        <i class="fas fa-plus"></i> إضافة منتج
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/product-search.js') }}"></script>
+
+<!-- Login Popup Modal -->
+<div id="loginPopup" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+        <button class="popup-close" onclick="closeLoginPopup()">&times;</button>
+        <div class="popup-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <h3>تسجيل الدخول مطلوب</h3>
+        <p id="popupMessage">لإضافة منتج في فئة <span id="categoryName"></span>، يرجى تسجيل الدخول أولاً.</p>
+        <div class="popup-actions">
+            <a href="{{ url_for('login') }}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline">
+                <i class="fas fa-user-plus"></i> إنشاء حساب جديد
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function showLoginPopup(category) {
+    document.getElementById('categoryName').textContent = category;
+    document.getElementById('loginPopup').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLoginPopup() {
+    document.getElementById('loginPopup').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close popup when clicking outside
+document.getElementById('loginPopup').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLoginPopup();
+    }
+});
+
+// Close popup with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('loginPopup').style.display === 'flex') {
+        closeLoginPopup();
+    }
+});
+</script>
+
+<style>
+.product-card-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.admin-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+}
+
+.btn-admin-edit, .btn-admin-delete {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.btn-admin-edit {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+}
+
+.btn-admin-edit:hover {
+    background: linear-gradient(135deg, #e0a800, #cc9500);
+    transform: scale(1.1);
+}
+
+.btn-admin-delete {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.btn-admin-delete:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: scale(1.1);
+}
+
+.admin-controls {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.admin-controls .btn {
+    flex: 1;
+    padding: 8px 16px;
+    text-align: center;
+}
+</style>
+
+{% endblock %}

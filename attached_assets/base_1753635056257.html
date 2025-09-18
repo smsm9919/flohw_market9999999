@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flohmarkt - سوق المستعمل</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <div class="container header-inner">
+        <a class="logo" href="{{ url_for('index') }}">فلو ماركت</a>
+        <nav class="nav">
+            <a href="{{ url_for('index') }}">الرئيسية</a>
+            <a href="{{ url_for('products') }}">المنتجات</a>
+            <a href="{{ url_for('cars') }}">سيارات مستعملة</a>
+            <a href="{{ url_for('jobs') }}">فرص عمل</a>
+            {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('admin') }}" class="badge-admin">الإدارة</a>
+            {% endif %}
+        </nav>
+        <div class="auth">
+            {% if session.get('user_id') %}
+                <span class="hello">مرحبًا، {{ session.get('fullname') }}</span>
+                <a href="{{ url_for('add_product') }}" class="btn btn-primary"><i class="fa fa-plus"></i> رفع منتج</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline">تسجيل الخروج</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary">إنشاء حساب</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 Flohmarkt - جميع الحقوق محفوظة</p>
+        <p>
+            <a href="#">سياسة الخصوصية</a> ·
+            <a href="#">الشروط والأحكام</a>
+        </p>
+    </div>
+</footer>
+</body>
+</html>

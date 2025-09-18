@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <h1>🛒 {{ _('hero.title') }}</h1>
+    <p>{{ _('hero.subtitle') }}</p>
+    <div class="hero-actions">
+        {% if session.user_id %}
+        <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-lg btn-hero-sell">
+            <i class="fas fa-plus-circle"></i> بع منتجك الآن
+        </a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg btn-hero-sell">
+            <i class="fas fa-user-plus"></i> ابدأ البيع مجاناً
+        </a>
+        {% endif %}
+        <a href="{{ url_for('products') }}" class="btn btn-outline btn-lg">
+            <i class="fas fa-search"></i> {{ _('hero.cta_button') }}
+        </a>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="section">
+    <h2 class="section-title">{{ _('categories.title') }}</h2>
+    <div class="categories-grid">
+        <a href="{{ url_for('products') }}?category=سيارات مستعملة" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80" alt="سيارات مستعملة" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-car"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>سيارات مستعملة</h3>
+                <p>اكتشف أفضل السيارات المستعملة بأسعار مناسبة</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=سيارات مستعملة" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع سيارتك المستعملة
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('سيارات مستعملة')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=الهواتف المحمولة" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80" alt="هواتف محمولة" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>الهواتف المحمولة</h3>
+                <p>أحدث الهواتف الذكية من جميع الماركات العالمية</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=الهواتف المحمولة" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع هاتفك المستعمل
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('الهواتف المحمولة')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=الإلكترونيات" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80" alt="إلكترونيات" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-laptop"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>الإلكترونيات</h3>
+                <p>أجهزة إلكترونية متنوعة وإكسسوارات تقنية</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=الإلكترونيات" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع جهازك المستعمل
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('الإلكترونيات')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=سماعات لاسلكية" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80" alt="سماعات لاسلكية" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-headphones"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>سماعات لاسلكية</h3>
+                <p>سماعات عالية الجودة لتجربة صوتية مميزة</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=سماعات لاسلكية" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع سماعاتك المستعملة
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('سماعات لاسلكية')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=كاميرات احترافية" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=800&q=80" alt="كاميرات احترافية" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>كاميرات احترافية</h3>
+                <p>كاميرات احترافية للمصورين والهواة</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=كاميرات احترافية" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع كاميرتك المستعملة
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('كاميرات احترافية')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=أثاث منزلي" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80" alt="أثاث منزلي" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-couch"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>أثاث منزلي</h3>
+                <p>أثاث عصري وكلاسيكي لجميع أنحاء المنزل</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=أثاث منزلي" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع أثاثك المستعمل
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('أثاث منزلي')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=أزياء وإكسسوارات" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="ملابس وإكسسوارات" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>أزياء وإكسسوارات</h3>
+                <p>أزياء وإكسسوارات من الماركات العالمية</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=أزياء وإكسسوارات" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع ملابسك المستعملة
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('أزياء وإكسسوارات')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('products') }}?category=عقارات" class="category-card">
+            <div class="category-image">
+                <img src="/static/images/realestate.svg" alt="عقارات" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-building"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>🏢 عقارات</h3>
+                <p>اكتشف أفضل العروض على الشقق، الفلل، والمباني السكنية</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=عقارات" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> بع عقارك الآن
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('عقارات')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+        
+        <a href="{{ url_for('jobs') }}" class="category-card">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=800&q=80" alt="فرص عمل" loading="lazy">
+                <div class="category-overlay">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+            </div>
+            <div class="category-content">
+                <h3>فرص عمل</h3>
+                <p>وظائف وفرص عمل متميزة في مختلف المجالات</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_product') }}?category=فرص عمل" class="btn btn-add-product-category">
+                    <i class="fas fa-plus-circle"></i> أضف فرصة عمل
+                </a>
+                {% else %}
+                <button onclick="showLoginPopup('فرص عمل')" class="btn btn-add-product-guest">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">أحدث المنتجات</h2>
+    <div class="products-grid">
+        {% for product in featured %}
+        <a class="product-card" href="{{ url_for('product_details', product_id=product['id']) }}">
+            <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}">
+            <div class="product-info">
+                <span class="product-category">{{ product['category_name'] or 'فئة أخرى' }}</span>
+                <h3 class="product-title">{{ product['name'] }}</h3>
+                <div class="product-footer">
+                    <span class="product-price">
+                        {% if product['price'] > 0 %}
+                            {{ "{:,.0f}".format(product['price']) }} جنيه
+                        {% else %}
+                            راتب حسب الاتفاق
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+<!-- Login Popup Modal -->
+<div id="loginPopup" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+        <button class="popup-close" onclick="closeLoginPopup()">&times;</button>
+        <div class="popup-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <h3>تسجيل الدخول مطلوب</h3>
+        <p id="popupMessage">لإضافة منتج في فئة <span id="categoryName"></span>، يرجى تسجيل الدخول أولاً.</p>
+        <div class="popup-actions">
+            <a href="{{ url_for('login') }}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline">
+                <i class="fas fa-user-plus"></i> إنشاء حساب جديد
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function showLoginPopup(category) {
+    document.getElementById('categoryName').textContent = category;
+    document.getElementById('loginPopup').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLoginPopup() {
+    document.getElementById('loginPopup').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close popup when clicking outside
+document.getElementById('loginPopup').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLoginPopup();
+    }
+});
+
+// Close popup with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('loginPopup').style.display === 'flex') {
+        closeLoginPopup();
+    }
+});
+</script>
+
+{% endblock %}
