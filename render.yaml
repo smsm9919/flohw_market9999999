@@ -2,7 +2,27 @@ services:
   - type: web
     name: flow-market
     env: python
+    region: frankfurt
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app --workers=2 --threads=4 --timeout=120
+    startCommand: gunicorn -c gunicorn.conf.py app:app
     autoDeploy: true
-    healthCheckPath: /healthz
+    healthCheckPath: /
+    numInstances: 1
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: flowmarket.onrender.com,flow-market.onrender.com
+      - key: APP_NAME
+        value: Flow Market
+      - key: TIMEZONE
+        value: Europe/Berlin
+databases:
+  - name: flow-market-db
+    plan: free
+    region: frankfurt
